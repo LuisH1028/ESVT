@@ -1,7 +1,12 @@
-# filename: 7segment_labjack.py
-# author: Torben Burandt, Jannis Rohleder
-# version: 1.1
-# date: 16.05.2025
+#########################################
+"""
+ filename: 7segment_labjack.py
+ author: Torben Burandt, Jannis Rohleder
+ version: 1.1
+ date: 16.05.2025
+ description: 
+"""
+#########################################
 
 from labjack import ljm
 import time
@@ -28,7 +33,7 @@ outputs = ["LT", "RBI", "D", "C", "B", "A", "CLK", "PARALLEL_LOAD"]
 for pin in outputs:
     ljm.eWriteName(handle, pins[pin], 1)
 
-# Truth table for 7448
+# Truth table for 7448N
 test_vectors = [
     {"label": "0",  "LT": 1, "RBI": 1, "D": 0, "C": 0, "B": 0, "A": 0, "expected": [0,1,1,1,1,1,1]},
     {"label": "1",  "LT": 1, "RBI": 1, "D": 0, "C": 0, "B": 0, "A": 1, "expected": [0,0,0,0,1,1,0]},
@@ -52,22 +57,22 @@ test_vectors = [
 ]
 
 # Function to write a digital output
-def set_output(pin, value):
+def set_output(pin, value): # init output pins
     ljm.eWriteName(handle, pins[pin], value)
 
-def pulse_clk():
+def pulse_clk(): # set clock signal
     set_output("CLK", 1)
     time.sleep(0.001)
     set_output("CLK", 0)
     time.sleep(0.001)
 
-def load_parallel():
+def load_parallel(): # trigger async load
     set_output("PARALLEL_LOAD", 0)
     time.sleep(0.001)
     set_output("PARALLEL_LOAD", 1)
     time.sleep(0.001)
 
-def shift_and_read():
+def shift_and_read(): # read analog vals with 7 clocks and interprete each val, also check negativ output
     bits = []
     for _ in range(7):
         pulse_clk()
@@ -87,7 +92,7 @@ for _ in range(8):
 ###
 
 for vector in test_vectors:
-    print(f"\nTesting: {vector['label']}")
+    print(f"\nTesting: {vector['label']}") # terminal decoration
 
     # Set control inputs
     for val in ["LT", "RBI", "D", "C", "B", "A"]: # set value outputs from truth_vector to outputs
@@ -96,6 +101,7 @@ for vector in test_vectors:
     load_parallel()
     result = shift_and_read()
 
+    # fancy terminal output
     status = "PASS" if result == vector["expected"] else "FAIL"
     print(f"Expected: {vector['expected']}\nActual:   {result} → {status}")
 
