@@ -1,4 +1,6 @@
 # Testing NAND-Gate
+# Authors: Chris Hölzle, Luis Huber
+# Date: 12.05.2025
 
 import labjack
 

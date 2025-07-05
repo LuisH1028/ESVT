@@ -1,3 +1,8 @@
+# testing the digital loopback
+# Authors: Chris Hölzle, Luis Huber
+# Date: 12.05.2025
+
+
 import labjack
 
 from labjack import ljm
